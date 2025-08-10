@@ -1,0 +1,7 @@
+vpc-name            = "Jenkins-vpc"
+igw-name            = "Jenkins-igw"
+subnet-name         = "Jenkins-subnet"
+subnet-name3        = "Jenkins-subnet3"
+security-group-name = "Jenkins-sg"
+rt-name3            = "Monitoring-route-table3"
+iam-policy-node     = "Monitoring-iam-policy-node"
