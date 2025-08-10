@@ -43,7 +43,7 @@ resource "aws_route_table_association" "rt-association" {
 }
 
 resource "aws_security_group" "security-group" {
-  vpc_id      = data.aws_vpc.default.id
+  vpc_id      = aws_vpc.vpc.id
   description = "Allowing Jenkins, Sonarqube, SSH Access"
 
   ingress = [
