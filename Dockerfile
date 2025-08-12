@@ -1,19 +1,17 @@
-FROM node:18-alpine AS build
+FROM node:18-alpine AS builder
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm ci && npm install @mui/base --save
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
 
 COPY . .
-
 ARG TMDB_V3_API_KEY
-ENV VITE_APP_TMDB_V3_API_KEY=${TMDB_V3_API_KEY}
-ENV VITE_APP_API_ENDPOINT_URL="https://www.themoviedb.org/"
+ENV VITE_APP_TMDB_V3_API_KEY=$TMDB_V3_API_KEY
+ENV VITE_APP_API_ENDPOINT_URL="https://api.themoviedb.org/"
+RUN yarn build
 
-# Build even if there are TS errors (temporary)
-RUN npm run build -- --noEmitOnError false
-
-FROM nginx:alpine
-COPY --from=build /app/dist /usr/share/nginx/html
+FROM nginx:stable-alpine
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/dist /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
