@@ -2,7 +2,7 @@ terraform {
   backend "s3" {
     bucket         = "my-reddit-bucket-2025"
     region         = "us-east-1"
-    key            = "EKS-DevSecOps-Project/Jenkins-Server-TF/terraform.tfstate"
+    key            = "EKS-DevSecOps-Project/Monitoring-TF/terraform.tfstate"
     #dynamodb_table = "Lock-Files"
     use_lockfile   = false
     encrypt        = true
