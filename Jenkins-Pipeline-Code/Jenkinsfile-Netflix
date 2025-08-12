@@ -107,15 +107,31 @@ pipeline{
             }
         }
     }
-    post{
-        always{
-            emailext attachLog: true,
-               subject: "'${currentBuild.result}'",
-               body: "Project: ${env.JOB_NAME}<br/>" +
-                     "Build Number: ${env.BUILD_NUMBER}<br/>" +
-                     "URL: ${env.BUILD_URL}<br/>",
-               to: 'sreelr5692@gmail.com' ,
-               attachmentsPattern: 'trivyfs.txt,trivyimage.txt'
-        }
+    post {
+  always {
+    script {
+      // (optional) show if attachments exist
+      sh 'ls -l trivyfs.txt trivyimage.txt || true'
+
+      try {
+        emailext(
+          to: 'sreelr5692@gmail.com',
+          from: 'sreelr5692@gmail.com',
+          subject: "'${currentBuild.result}'",
+          mimeType: 'text/html',                 // important for <br/> etc.
+          attachLog: true,
+          attachmentsPattern: 'trivyfs.txt,trivyimage.txt',
+          body: """
+            Project: ${env.JOB_NAME}<br/>
+            Build Number: ${env.BUILD_NUMBER}<br/>
+            URL: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a><br/>
+          """
+        )
+      } catch (e) {
+        echo "Email failed: ${e}"
+      }
     }
+  }
+}
+
   }
