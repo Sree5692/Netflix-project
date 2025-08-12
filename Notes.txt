@@ -1,0 +1,4 @@
+convert all the commands needed to install jenkins, sonarqube, trivy, EKS cluster, ArofoCD, prometues and Grafana into terraform script
+then create an S3 bucket in AWS add the same name as mentioned in backend.tf file
+create vpc, subnets, security group iam roles/policies, esk clusters & nodes and a .sh file to call it when we create an ec2 instance and install all the mentioned above into the instance
+Veriabalize all the code so its easy to alter and pass the value from .tfvars file
