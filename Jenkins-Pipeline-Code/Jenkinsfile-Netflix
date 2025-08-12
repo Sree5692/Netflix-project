@@ -63,12 +63,12 @@ pipeline{
         }
         stage("TRIVY"){
             steps{
-                sh "trivy image sree56/netflix:${BUILD_NUMBER} > trivyimage.txt" 
+                sh "trivy image devopslearning25/netflix:${BUILD_NUMBER} > trivyimage.txt" 
             }
         }
         stage('Deploy to container'){
             steps{
-                sh "docker run -d -p 8081:80 sree56/netflix:${BUILD_NUMBER}"
+                sh "docker run -d -p 8081:80 devopslearning25/netflix:${BUILD_NUMBER}"
             }
         }
         stage('Update Deployment file') {
