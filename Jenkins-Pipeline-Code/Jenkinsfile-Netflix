@@ -39,6 +39,42 @@ pipeline{
                 sh "npm install"
             }
         }
+
+        stage('Prepare lockfile (Yarn/NPM auto-detect)') {
+            steps {
+         sh '''
+      set -eux
+      # Always work from repo root
+      ls -la
+
+      # If yarn.lock exists, great; if not but package-lock.json exists, convert it.
+      if [ -f yarn.lock ]; then
+        echo "yarn.lock already present"
+      elif [ -f package-lock.json ]; then
+        echo "No yarn.lock, but package-lock.json found -> generating yarn.lock via yarn import"
+        corepack enable
+        yarn set version stable
+        yarn import
+        # Show what we created
+        ls -la yarn.lock
+      else
+        echo "No yarn.lock or package-lock.json found. Proceeding without lockfile (not ideal)."
+        # Optional: create an empty lock to satisfy COPY (not recommended for reproducibility)
+        # : > yarn.lock
+      fi
+
+      # If you actually need local deps for pre-build steps, install them here:
+      if [ -f yarn.lock ]; then
+        corepack enable
+        yarn install --frozen-lockfile
+      elif [ -f package-lock.json ]; then
+        npm ci
+      else
+        npm install
+      fi
+    '''
+  }
+}
         // stage('OWASP FS SCAN') {
         //     steps {
         //         dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
